@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+      "kubernetes": {
+        "command": "uv",
+        "args": ["--directory", "/servers/kubernetes-mcp", "run", "app.py"],
+        "env": {
+          "KUBECONFIG_DIR": "/data/kubeconfigs"
+        }
+      }
+    }
+}
