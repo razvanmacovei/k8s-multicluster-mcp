@@ -212,8 +212,10 @@ Expose my 'backend' deployment in the 'default' namespace as a service on port 8
 
 ### Execute Command in a Pod
 
-```Execute the command 'ls -la /app' in the 'app' container of pod 'web-app-1234' in the 'default' namespace.
 ```
+Execute the command 'ls -la /app' in the 'app' container of pod 'web-app-1234' in the 'default' namespace.
+```
+
 
 ### Node Maintenance
 
@@ -318,5 +320,6 @@ The server implements the following MCP tools:
 
 - `k8s_pod_exec`: Execute a command in a container
 
+## Contributing
 
-
+Contributions are welcome! Please feel free to submit a Pull Request.
