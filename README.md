@@ -243,7 +243,8 @@ spec:
 
 ### Patch a Resource
 
-```Patch the 'my-configmap' ConfigMap in the 'default' namespace to add a new key 'NEW_SETTING' with value 'enabled'.
+```
+Patch the 'my-configmap' ConfigMap in the 'default' namespace to add a new key 'NEW_SETTING' with value 'enabled'.
 ```
 
 ### Update Labels
