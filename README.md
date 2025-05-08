@@ -2,26 +2,36 @@
 
 An MCP (Model Context Protocol) server application for Kubernetes operations, providing a standardized API to interact with multiple Kubernetes clusters simultaneously using multiple kubeconfig files.
 
-## Environment Setup and Installation
+### MCPO Server Configuration
+
+Add the following configuration to your MCPO server's `config.json` file (e.g., in Claude Desktop):
+
+```json
+{
+  "mcpServers": {
+    "kubernetes": {
+      "command": "docker",
+      "args": ["run", "--rm", "-v", "/path/to/your/kubeconfigs:/kubeconfigs", "ghcr.io/razvanmacovei/k8s-multicluster-mcp:latest"],
+      "env": {}
+    }
+  }
+}
+```
+
+> Replace `/path/to/your/kubeconfigs` with the actual path to your kubeconfig files directory.
+
+The server expects multiple kubeconfig files to be placed in the directory you specified. Each kubeconfig file represents a different Kubernetes cluster that you can interact with.
+
+
+## Alternative Installation Methods
 
 ### Prerequisites
 - Python 3.8 or higher
 - pip package manager
-- uv package manager
+- uv package manager (optional, recommended for faster installation)
 
-### Installing uv
-```bash
-# On macOS
-brew install uv
+### Setting up a Local Environment
 
-# On Linux/Windows with pip
-pip install uv
-
-# Verify installation
-uv --version
-```
-
-### Setting up a dedicated environment
 1. Clone the repository
    ```bash
    git clone https://github.com/razvanmacovei/k8s-multicluster-mcp.git
@@ -59,25 +69,55 @@ uv --version
    python3 app.py
    ```
 
-## MCPO Server Configuration
+### Installing uv (Optional)
+```bash
+# On macOS
+brew install uv
 
-Add the following configuration to your MCPO server's `config.json` file:
+# On Linux/Windows with pip
+pip install uv
+
+# Verify installation
+uv --version
+```
+
+### Building the Docker Image Locally
+
+If you prefer to build the Docker image locally:
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/razvanmacovei/k8s-multicluster-mcp.git
+   cd k8s-multicluster-mcp
+   ```
+
+2. Build the Docker image
+   ```bash
+   docker build -t k8s-multicluster-mcp .
+   ```
+
+3. Run the container
+   ```bash
+   docker run -v /path/to/your/kubeconfigs:/kubeconfigs k8s-multicluster-mcp
+   ```
+
+### MCPO Configuration for Local Installation
+
+If you're not using Docker and running locally:
 
 ```json
 {
   "mcpServers": {
     "kubernetes": {
-      "command": "uv",
-      "args": ["--directory", "/servers/k8s-multicluster-mcp", "run", "app.py"],
+      "command": "python",
+      "args": ["/path/to/k8s-multicluster-mcp/app.py"],
       "env": {
-        "KUBECONFIG_DIR": "/kubeconfigs"
+        "KUBECONFIG_DIR": "/path/to/your/kubeconfigs"
       }
     }
   }
 }
 ```
-
-The server expects multiple kubeconfig files to be placed in the directory specified by the `KUBECONFIG_DIR` environment variable. Each kubeconfig file represents a different Kubernetes cluster that you can interact with.
 
 ## Multi-Cluster Management
 
