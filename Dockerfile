@@ -12,14 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv for faster package installation
-RUN curl -sSf https://astral.sh/uv/install.sh | sh
-
 # Copy requirements file first to leverage Docker cache
 COPY requirements.txt .
 
-# Install Python dependencies using uv
-RUN /root/.cargo/bin/uv pip install --system -r requirements.txt
+# Install Python dependencies directly with pip
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
 COPY . .
