@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Local development
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Kubernetes config (should be mounted as a volume)
+kubeconfigs/
+*.kubeconfig
+*.yaml
+*.yml
+
+# Other
+.DS_Store
+Dockerfile
+docker-compose.yml
+README.md
+LICENSE
+*.md 
