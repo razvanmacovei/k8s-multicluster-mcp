@@ -42,4 +42,3 @@ jobs:
           export KUBECONFIG_DIR=./test_kubeconfigs
           # Test if the app can initialize (will exit quickly since no stdin)
           timeout 5s python app.py || code=$?; if [ $code -eq 124 ]; then echo "App started successfully"; else exit $code; fi
-  
