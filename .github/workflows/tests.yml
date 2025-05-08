@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+
+jobs:
+  tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Check for syntax errors
+        run: |
+          python -m compileall . -f
+          
+      - name: Test import of modules
+        run: |
+          python -c "import app; print('App modules imported successfully')"
+          
+      - name: Check application startup
+        run: |
+          # Create test kubeconfig dir
+          mkdir -p ./test_kubeconfigs
+          # Set environment variable
+          export KUBECONFIG_DIR=./test_kubeconfigs
+          # Test if the app can initialize (will exit quickly since no stdin)
+          timeout 5s python app.py || code=$?; if [ $code -eq 124 ]; then echo "App started successfully"; else exit $code; fi
+  
