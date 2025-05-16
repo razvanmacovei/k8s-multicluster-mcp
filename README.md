@@ -1,4 +1,5 @@
 # Multi Cluster Kubernetes MCP Server
+[![smithery badge](https://smithery.ai/badge/@razvanmacovei/k8s-multicluster-mcp)](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp)
 
 An MCP (Model Context Protocol) server application for Kubernetes operations, providing a standardized API to interact with multiple Kubernetes clusters simultaneously using multiple kubeconfig files.
 
@@ -26,6 +27,14 @@ The server expects multiple kubeconfig files to be placed in the directory you s
 
 
 ## Installation
+
+### Installing via Smithery
+
+To install Multi Cluster Kubernetes Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp):
+
+```bash
+npx -y @smithery/cli install @razvanmacovei/k8s-multicluster-mcp --client claude
+```
 
 ### Prerequisites
 - Python 3.8 or higher
