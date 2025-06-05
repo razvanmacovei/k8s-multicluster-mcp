@@ -1,0 +1,21 @@
+[tool.uv]
+name = "k8s-multicluster-mcp"
+version = "1.0.3"
+description = "An MCP (Model Context Protocol) server application for Kubernetes operations, providing a standardized API to interact with multiple Kubernetes clusters simultaneously using multiple kubeconfig files."
+authors = ["razvanmacovei"]
+
+[tool.uv.dependencies]
+python = "^3.11"
+fastmcp = "*"
+kubernetes = ">=28.1.0"
+httpx = "*"
+pydantic = "*"
+pyyaml = "*"
+fastapi = "*"
+uvicorn = "*"
+json-patch = "*"
+jsonpatch = "*"
+
+[build-system]
+requires = ["uv-core>=1.0.0"]
+build-backend = "uv.core.masonry.api"
