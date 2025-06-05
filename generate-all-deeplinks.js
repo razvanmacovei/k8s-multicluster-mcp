@@ -47,7 +47,7 @@ function generateDeepLink(serverName, config) {
 }
 
 function generateMarkdownButton(title, deepLink) {
-  return `[![Add ${title} to Cursor](https://img.shields.io/badge/Add%20${encodeURIComponent(title)}%20to%20Cursor-000000?style=for-the-badge&logo=cursor&logoColor=white)](${deepLink})`;
+  return `[Add ${title} to Cursor](${deepLink})`;
 }
 
 console.log("# k8s-multicluster-mcp Deep Link Configurations\n");

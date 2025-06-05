@@ -7,18 +7,16 @@ An MCP (Model Context Protocol) server application for Kubernetes operations, pr
 
 Add this MCP server to Cursor with one click:
 
-[![Add to Cursor](https://img.shields.io/badge/Add%20to%20Cursor-000000?style=for-the-badge&logo=cursor&logoColor=white)](cursor://anysphere.cursor-deeplink/mcp/install?name=k8s-multicluster&config=eyJjb21tYW5kIjoicHl0aG9uMyIsImFyZ3MiOlsiYXBwLnB5Il0sImVudiI6eyJLVUJFQ09ORklHX0RJUiI6Ii9wYXRoL3RvL3lvdXIva3ViZWNvbmZpZ3MifX0=)
+[Add k8s-multicluster MCP server to Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=k8s-multicluster&config=eyJjb21tYW5kIjoicHl0aG9uMyIsImFyZ3MiOlsiYXBwLnB5Il0sImVudiI6eyJLVUJFQ09ORklHX0RJUiI6Ii9wYXRoL3RvL3lvdXIva3ViZWNvbmZpZ3MifX0=)
 
 **Note:** After installation, you'll need to update the `KUBECONFIG_DIR` environment variable to point to your actual kubeconfig directory.
 
-### Alternative Installation Links
+### Alternative Installation Options
 
-Different deployment scenarios require different configurations. Choose the one that fits your setup:
+Different deployment scenarios require different configurations:
 
-- **Development (current directory):** [![Add to Cursor](https://img.shields.io/badge/Add%20to%20Cursor-000000?style=flat&logo=cursor&logoColor=white)](cursor://anysphere.cursor-deeplink/mcp/install?name=k8s-multicluster&config=eyJjb21tYW5kIjoicHl0aG9uMyIsImFyZ3MiOlsiYXBwLnB5Il0sImVudiI6eyJLVUJFQ09ORklHX0RJUiI6Ii9wYXRoL3RvL3lvdXIva3ViZWNvbmZpZ3MifX0=)
-- **With UV package manager:** [![Add to Cursor](https://img.shields.io/badge/Add%20to%20Cursor-000000?style=flat&logo=cursor&logoColor=white)](cursor://anysphere.cursor-deeplink/mcp/install?name=k8s-multicluster&config=eyJjb21tYW5kIjoidXYiLCJhcmdzIjpbIi0tZGlyZWN0b3J5IiwiLiIsInJ1biIsImFwcC5weSJdLCJlbnYiOnsiS1VCRUNPTkZJR19ESVIiOiIvcGF0aC90by95b3VyL2t1YmVjb25maWdzIn19)
-
-> 💡 **Tip:** Run `node generate-all-deeplinks.js` to see all available configuration options and their corresponding deep links.
+- **Development (current directory):** [Add to Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=k8s-multicluster&config=eyJjb21tYW5kIjoicHl0aG9uMyIsImFyZ3MiOlsiYXBwLnB5Il0sImVudiI6eyJLVUJFQ09ORklHX0RJUiI6Ii9wYXRoL3RvL3lvdXIva3ViZWNvbmZpZ3MifX0=)
+- **With UV package manager:** [Add to Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=k8s-multicluster&config=eyJjb21tYW5kIjoidXYiLCJhcmdzIjpbIi0tZGlyZWN0b3J5IiwiLiIsInJ1biIsImFwcC5weSJdLCJlbnYiOnsiS1VCRUNPTkZJR19ESVIiOiIvcGF0aC90by95b3VyL2t1YmVjb25maWdzIn19)
 
 ### MCPO Server Configuration
 
