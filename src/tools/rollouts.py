@@ -1,7 +1,6 @@
 import datetime
-import json
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from kubernetes import client
 
@@ -275,7 +274,7 @@ async def get_k8s_rollout_history(context: str, namespace: str, resource_type: s
 
             # For DaemonSets, we can look at the controller revision history
             # But this requires additional API calls to get the ControllerRevision objects
-            core_v1 = client.CoreV1Api(api_client)
+            client.CoreV1Api(api_client)
 
             # Get controller revisions for this daemonset
             label_selector = (
@@ -317,7 +316,7 @@ async def get_k8s_rollout_history(context: str, namespace: str, resource_type: s
                         key=lambda x: int(x["revision"]) if x["revision"].isdigit() else 0, reverse=True
                     )
 
-                except Exception as e:
+                except Exception:
                     # If we can't get controller revisions, at least return the current revision
                     result["revisions"].append(
                         {

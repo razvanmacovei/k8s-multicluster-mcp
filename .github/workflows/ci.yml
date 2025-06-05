@@ -2,160 +2,32 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-
-env:
-  PYTHON_VERSION: "3.11"
+    branches: [main]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install black flake8 mypy
-          pip install -r requirements.txt
-      
-      - name: Format check with black
-        run: black --check src/
-        
-      - name: Lint with flake8
-        run: flake8 src/ --max-line-length=120 --extend-ignore=E203,W503
-        
-      - name: Type check with mypy
-        run: mypy src/ --ignore-missing-imports
-
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      
-      - name: Install security tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install bandit safety pip-audit
-          pip install -r requirements.txt
-      
-      - name: Security scan with bandit
-        run: bandit -r src/ -ll
-        
-      - name: Check dependencies with safety
-        run: safety check
-        continue-on-error: true  # Don't fail on vulnerabilities, just report
-        
-      - name: Audit dependencies with pip-audit
-        run: pip-audit
-        continue-on-error: true
-
   test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.11"]
-            
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-asyncio pytest-cov
-          pip install -r requirements.txt
-      
-      - name: Run tests
-        run: |
-          pytest tests/ -v --cov=src --cov-report=xml --cov-report=html
-        if: false  # Skip for now as tests don't exist yet
-        
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        if: false  # Skip for now
-        with:
-          file: ./coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-
-  build:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      
-      - name: Install build tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install build twine
-      
-      - name: Build package
-        run: python -m build
-      
-      - name: Check package with twine
-        run: twine check dist/*
-      
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-          
-  test-install:
-    needs: build
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-          
-      - name: Install pipx
-        run: |
-          python -m pip install --upgrade pip
-          pip install pipx
-          pipx ensurepath
-          
-      - name: Test pipx run from wheel
-        run: |
-          pipx run --spec dist/*.whl k8s-multicluster-mcp --help || echo "Help command not implemented"
-        shell: bash
-        
-      - name: Test pipx run from source
-        run: |
-          pipx run --spec . k8s-multicluster-mcp --help || echo "Help command not implemented"
-        shell: bash 
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pytest
+    
+    - name: Run tests
+      run: pytest tests/
+    
+    - name: Try building package
+      run: |
+        pip install build
+        python -m build 

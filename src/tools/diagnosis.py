@@ -1,6 +1,6 @@
 import os
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from kubernetes import client
 
@@ -81,7 +81,10 @@ async def diagnose_k8s_application(
                     result["issues"].append(
                         {
                             "severity": "warning",
-                            "issue": f"Deployment has {resource.status.ready_replicas or 0}/{resource.spec.replicas} ready replicas",
+                            "issue": (
+                                f"Deployment has {resource.status.ready_replicas or 0}/"
+                                f"{resource.spec.replicas} ready replicas"
+                            ),
                         }
                     )
 

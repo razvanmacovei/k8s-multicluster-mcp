@@ -1,7 +1,6 @@
 import json
 import os
-from io import StringIO
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import yaml
 from kubernetes import client

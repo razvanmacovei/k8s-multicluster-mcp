@@ -1,6 +1,5 @@
-import json
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional
 
 from kubernetes import client, stream
 from kubernetes.client.rest import ApiException
@@ -55,7 +54,7 @@ async def k8s_exec_command(
 
         # If timeout is specified, set it
         if timeout:
-            _request_timeout = timeout
+            pass
 
         # Execute the command
         exec_result = stream.stream(
