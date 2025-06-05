@@ -1,39 +1,39 @@
 #!/usr/bin/env python3
-from mcp.server.fastmcp import FastMCP
 import os
+
+from mcp.server.fastmcp import FastMCP
 
 # Create MCP server
 mcp = FastMCP("KubernetesMCP")
 
+from .tools.api_discovery import list_k8s_apis as apis_list
+from .tools.api_discovery import list_k8s_crds as crds_list
 from .tools.contexts import list_k8s_contexts as contexts_list
-from .tools.namespaces import list_k8s_namespaces as namespaces_list
-from .tools.nodes import list_k8s_nodes as nodes_list
-from .tools.pods import list_k8s_resources as resources_list, get_k8s_pod_logs as pod_logs_get
-from .tools.events import list_k8s_events as events_list
-from .tools.resources import get_k8s_resource as resource_get
-from .tools.metrics import top_k8s_nodes as nodes_top, top_k8s_pods as pods_top
-from .tools.rollouts import (
-    get_k8s_rollout_status as rollout_status_get,
-    get_k8s_rollout_history as rollout_history_get,
-    k8s_rollout_undo as rollout_undo,
-    k8s_rollout_restart as rollout_restart,
-    k8s_rollout_pause as rollout_pause,
-    k8s_rollout_resume as rollout_resume,
-)
-from .tools.scaling import (
-    k8s_scale_resource as resource_scale,
-    k8s_autoscale_resource as resource_autoscale,
-    k8s_update_resources as resource_update_resources,
-)
-from .tools.diagnosis import diagnose_k8s_application as application_diagnose
-from .tools.api_discovery import list_k8s_apis as apis_list, list_k8s_crds as crds_list
 from .tools.describe import describe_k8s_resource as resource_describe
+from .tools.diagnosis import diagnose_k8s_application as application_diagnose
+from .tools.events import list_k8s_events as events_list
+from .tools.metrics import top_k8s_nodes as nodes_top
+from .tools.metrics import top_k8s_pods as pods_top
+from .tools.namespaces import list_k8s_namespaces as namespaces_list
+from .tools.node_management import k8s_cordon, k8s_drain, k8s_taint, k8s_uncordon, k8s_untaint
+from .tools.nodes import list_k8s_nodes as nodes_list
+from .tools.pod_operations import k8s_exec_command
+from .tools.pods import get_k8s_pod_logs as pod_logs_get
+from .tools.pods import list_k8s_resources as resources_list
 
 # Import new tools
-from .tools.resource_management import k8s_create, k8s_apply, k8s_patch, k8s_label, k8s_annotate
+from .tools.resource_management import k8s_annotate, k8s_apply, k8s_create, k8s_label, k8s_patch
+from .tools.resources import get_k8s_resource as resource_get
+from .tools.rollouts import get_k8s_rollout_history as rollout_history_get
+from .tools.rollouts import get_k8s_rollout_status as rollout_status_get
+from .tools.rollouts import k8s_rollout_pause as rollout_pause
+from .tools.rollouts import k8s_rollout_restart as rollout_restart
+from .tools.rollouts import k8s_rollout_resume as rollout_resume
+from .tools.rollouts import k8s_rollout_undo as rollout_undo
+from .tools.scaling import k8s_autoscale_resource as resource_autoscale
+from .tools.scaling import k8s_scale_resource as resource_scale
+from .tools.scaling import k8s_update_resources as resource_update_resources
 from .tools.workload_management import k8s_expose, k8s_set_resources
-from .tools.node_management import k8s_cordon, k8s_uncordon, k8s_drain, k8s_taint, k8s_untaint
-from .tools.pod_operations import k8s_exec_command
 
 
 # Register tools using decorators
