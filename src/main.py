@@ -3,9 +3,6 @@ import os
 
 from mcp.server.fastmcp import FastMCP
 
-# Create MCP server
-mcp = FastMCP("KubernetesMCP")
-
 from .tools.api_discovery import list_k8s_apis as apis_list
 from .tools.api_discovery import list_k8s_crds as crds_list
 from .tools.contexts import list_k8s_contexts as contexts_list
@@ -34,6 +31,9 @@ from .tools.scaling import k8s_autoscale_resource as resource_autoscale
 from .tools.scaling import k8s_scale_resource as resource_scale
 from .tools.scaling import k8s_update_resources as resource_update_resources
 from .tools.workload_management import k8s_expose, k8s_set_resources
+
+# Create MCP server
+mcp = FastMCP("KubernetesMCP")
 
 
 # Register tools using decorators

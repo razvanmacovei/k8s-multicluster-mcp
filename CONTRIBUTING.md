@@ -62,11 +62,8 @@ git checkout -b feature/your-feature-name
 ### 3. Format Your Code
 
 ```bash
-# Format with black
+# Format with black (also handles import sorting)
 black src/ tests/
-
-# Sort imports with isort
-isort src/ tests/
 
 # Check with flake8
 flake8 src/ tests/ --max-line-length=120 --extend-ignore=E203,W503
