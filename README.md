@@ -9,6 +9,15 @@ An MCP (Model Context Protocol) server application for Kubernetes operations, pr
 
 ## 🚀 Quick Start
 
+### 1. Install via pipx (Recommended)
+
+The easiest way to use k8s-multicluster-mcp is with `pipx run`:
+
+```bash
+# Run directly without installation
+pipx run k8s-multicluster-mcp
+```
+
 No installation required! Just configure your MCP client (e.g., Claude Desktop) by adding to `config.json`:
 
 ```json
@@ -31,7 +40,7 @@ The first time you use it, `pipx` will automatically download and install the pa
 
 ## 📋 Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - `pipx` installed (`brew install pipx` on macOS, or see [pipx installation](https://pipx.pypa.io/stable/installation/))
 - One or more kubeconfig files in a directory
 - kubectl (optional, for verification)

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-01-03
+
 ### Added
 - Published package to PyPI for easy installation via `pipx run`
 - GitHub Actions workflows for CI/CD (ci.yml, publish.yml, release.yml)
@@ -20,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GitHub issue and PR templates
 - Test suite with package structure validation
 - Linter configurations (black, isort, flake8)
-- Python 3.8+ support (previously 3.11+)
+- Python 3.10+ support (fastmcp requirement)
 
 ### Changed
 - Moved from manual installation to `pipx run` approach
@@ -48,5 +50,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MCP server implementation using FastMCP
 - Support for all standard Kubernetes resources
 
-[Unreleased]: https://github.com/razvanmacovei/k8s_multicluster_mcp/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/razvanmacovei/k8s_multicluster_mcp/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/razvanmacovei/k8s_multicluster_mcp/compare/v1.0.3...v1.1.0
 [1.0.3]: https://github.com/razvanmacovei/k8s_multicluster_mcp/releases/tag/v1.0.3 
