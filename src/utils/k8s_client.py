@@ -1,6 +1,6 @@
 import glob
 import os
-from typing import Dict, List, Optional
+from typing import List
 
 from kubernetes import client, config
 
@@ -38,7 +38,7 @@ class KubernetesClient:
                         # Add all contexts from this file
                         for ctx in contexts_from_file[0]:
                             contexts.append(ctx["name"])
-                except Exception as e:
+                except Exception:
                     # Skip invalid files
                     continue
 

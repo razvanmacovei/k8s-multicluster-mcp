@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from kubernetes import client
 from kubernetes.client.rest import ApiException

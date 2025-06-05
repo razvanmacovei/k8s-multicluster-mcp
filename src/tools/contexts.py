@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, List
+from typing import List
 
 from ..utils.k8s_client import KubernetesClient
 
