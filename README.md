@@ -1,8 +1,22 @@
 # Multi Cluster Kubernetes MCP Server
 
+[![PyPI version](https://badge.fury.io/py/k8s-multicluster-mcp.svg)](https://badge.fury.io/py/k8s-multicluster-mcp)
+[![Python versions](https://img.shields.io/pypi/pyversions/k8s-multicluster-mcp.svg)](https://pypi.org/project/k8s-multicluster-mcp/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/razvanmacovei/k8s_multicluster_mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/razvanmacovei/k8s_multicluster_mcp/actions/workflows/ci.yml)
+
 An MCP (Model Context Protocol) server application for Kubernetes operations, providing a standardized API to interact with multiple Kubernetes clusters simultaneously using multiple kubeconfig files.
 
 ## 🚀 Quick Start
+
+### 1. Install via pipx (Recommended)
+
+The easiest way to use k8s-multicluster-mcp is with `pipx run`:
+
+```bash
+# Run directly without installation
+pipx run k8s-multicluster-mcp
+```
 
 No installation required! Just configure your MCP client (e.g., Claude Desktop) by adding to `config.json`:
 
