@@ -1,6 +1,7 @@
-from typing import Dict, List, Any, Optional, Union
-import os
 import json
+import os
+from typing import Any, Dict, List, Optional, Union
+
 from kubernetes import client
 from kubernetes.client.rest import ApiException
 
