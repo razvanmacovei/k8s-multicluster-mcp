@@ -14,7 +14,7 @@ By participating in this project, you agree to abide by our code of conduct:
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - `pipx` for testing package installation
 - `git` for version control
 - A Kubernetes cluster (or kind/minikube) for testing
