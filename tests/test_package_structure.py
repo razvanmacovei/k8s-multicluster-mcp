@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 import pytest
-import toml
+import tomllib
 
 
 def test_package_imports():
@@ -49,8 +49,6 @@ def test_pyproject_toml_valid():
     assert pyproject_path.exists(), "pyproject.toml should exist"
 
     # Read pyproject.toml
-    import tomllib
-
     with open(pyproject_path, "rb") as f:
         data = tomllib.load(f)
 
