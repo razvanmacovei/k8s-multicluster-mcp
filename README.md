@@ -1,5 +1,5 @@
 # Multi Cluster Kubernetes MCP Server
-[![smithery badge](https://smithery.ai/badge/@razvanmacovei/k8s_multicluster_mcp)](https://smithery.ai/server/@razvanmacovei/k8s_multicluster_mcp)
+[![smithery badge](https://smithery.ai/badge/@razvanmacovei/k8s-multicluster-mcp)](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp)
 
 An MCP (Model Context Protocol) server application for Kubernetes operations, providing a standardized API to interact with multiple Kubernetes clusters simultaneously using multiple kubeconfig files.
 
