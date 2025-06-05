@@ -33,7 +33,7 @@ The server expects multiple kubeconfig files to be placed in the directory you s
 To install Multi Cluster Kubernetes Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp):
 
 ```bash
-npx -y @smithery/cli install @razvanmacovei/k8s_multicluster_mcp --client claude
+npx -y @smithery/cli install @razvanmacovei/k8s-multicluster-mcp --client claude
 ```
 
 ### Prerequisites
