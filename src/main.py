@@ -1,17 +1,130 @@
 #!/usr/bin/env python3
 import os
+import sys
 
 from mcp.server.fastmcp import FastMCP
 
-from .tools.api_discovery import list_k8s_apis as apis_list
-from .tools.api_discovery import list_k8s_crds as crds_list
-from .tools.contexts import list_k8s_contexts as contexts_list
-from .tools.describe import describe_k8s_resource as resource_describe
-from .tools.diagnosis import diagnose_k8s_application as application_diagnose
+# Handle imports based on how the module is being run
+if __name__ == "__main__" or "pytest" in sys.modules:
+    # Running directly or in tests - use absolute imports
+    from tools.api_discovery import list_k8s_apis as apis_list
+    from tools.contexts import list_contexts as contexts_list
+    from tools.create import apply_k8s_resource as apply_resource
+    from tools.delete import delete_k8s_resource as delete_resource
+    from tools.describe import describe_k8s_resource as describe_resource
+    from tools.diagnosis import diagnose_k8s_application as diagnose_app
+    from tools.drain import (
+        cordon_k8s_node as cordon_node,
+        drain_k8s_node as drain_node,
+        uncordon_k8s_node as uncordon_node,
+    )
+    from tools.get import get_k8s_resource as get_resource
+    from tools.hpa import (
+        create_k8s_hpa as create_hpa,
+        get_k8s_hpa as get_hpa,
+        delete_k8s_hpa as delete_hpa,
+    )
+    from tools.logs import get_k8s_pod_logs as get_logs
+    from tools.namespaces import list_k8s_namespaces as namespaces_list
+    from tools.network_policies import (
+        create_k8s_network_policy as create_netpol,
+        get_k8s_network_policies as get_netpols,
+        delete_k8s_network_policy as delete_netpol,
+    )
+    from tools.node_management import (
+        get_k8s_nodes as get_nodes,
+        get_k8s_node_resources as get_node_resources,
+        taint_k8s_node as taint_node,
+        untaint_k8s_node as untaint_node,
+    )
+    from tools.patch import patch_k8s_resource as patch_resource
+    from tools.pod_operations import (
+        exec_k8s_pod as pod_exec,
+        get_k8s_pod_resource_usage as pod_usage,
+    )
+    from tools.resource_management import (
+        get_k8s_resources as get_resources,
+        get_k8s_resource_yaml as get_yaml,
+    )
+    from tools.rollouts import (
+        rollout_k8s_restart as rollout_restart,
+        rollout_k8s_status as rollout_status,
+        rollout_k8s_history as rollout_history,
+        rollout_k8s_undo as rollout_undo,
+        rollout_k8s_pause as rollout_pause,
+        rollout_k8s_resume as rollout_resume,
+    )
+    from tools.scale import scale_k8s_resource as scale_resource
+    from tools.workload_management import (
+        get_k8s_deployments as get_deployments,
+        get_k8s_statefulsets as get_statefulsets,
+        get_k8s_daemonsets as get_daemonsets,
+        get_k8s_replicasets as get_replicasets,
+        get_k8s_jobs as get_jobs,
+    )
+    from utils.k8s_client import KubernetesClient
+else:
+    # Imported as a module - use relative imports
+    from .tools.api_discovery import list_k8s_apis as apis_list
+    from .tools.contexts import list_contexts as contexts_list
+    from .tools.create import apply_k8s_resource as apply_resource
+    from .tools.delete import delete_k8s_resource as delete_resource
+    from .tools.describe import describe_k8s_resource as describe_resource
+    from .tools.diagnosis import diagnose_k8s_application as diagnose_app
+    from .tools.drain import (
+        cordon_k8s_node as cordon_node,
+        drain_k8s_node as drain_node,
+        uncordon_k8s_node as uncordon_node,
+    )
+    from .tools.get import get_k8s_resource as get_resource
+    from .tools.hpa import (
+        create_k8s_hpa as create_hpa,
+        get_k8s_hpa as get_hpa,
+        delete_k8s_hpa as delete_hpa,
+    )
+    from .tools.logs import get_k8s_pod_logs as get_logs
+    from .tools.namespaces import list_k8s_namespaces as namespaces_list
+    from .tools.network_policies import (
+        create_k8s_network_policy as create_netpol,
+        get_k8s_network_policies as get_netpols,
+        delete_k8s_network_policy as delete_netpol,
+    )
+    from .tools.node_management import (
+        get_k8s_nodes as get_nodes,
+        get_k8s_node_resources as get_node_resources,
+        taint_k8s_node as taint_node,
+        untaint_k8s_node as untaint_node,
+    )
+    from .tools.patch import patch_k8s_resource as patch_resource
+    from .tools.pod_operations import (
+        exec_k8s_pod as pod_exec,
+        get_k8s_pod_resource_usage as pod_usage,
+    )
+    from .tools.resource_management import (
+        get_k8s_resources as get_resources,
+        get_k8s_resource_yaml as get_yaml,
+    )
+    from .tools.rollouts import (
+        rollout_k8s_restart as rollout_restart,
+        rollout_k8s_status as rollout_status,
+        rollout_k8s_history as rollout_history,
+        rollout_k8s_undo as rollout_undo,
+        rollout_k8s_pause as rollout_pause,
+        rollout_k8s_resume as rollout_resume,
+    )
+    from .tools.scale import scale_k8s_resource as scale_resource
+    from .tools.workload_management import (
+        get_k8s_deployments as get_deployments,
+        get_k8s_statefulsets as get_statefulsets,
+        get_k8s_daemonsets as get_daemonsets,
+        get_k8s_replicasets as get_replicasets,
+        get_k8s_jobs as get_jobs,
+    )
+    from .utils.k8s_client import KubernetesClient
+
 from .tools.events import list_k8s_events as events_list
 from .tools.metrics import top_k8s_nodes as nodes_top
 from .tools.metrics import top_k8s_pods as pods_top
-from .tools.namespaces import list_k8s_namespaces as namespaces_list
 from .tools.node_management import k8s_cordon, k8s_drain, k8s_taint, k8s_uncordon, k8s_untaint
 from .tools.nodes import list_k8s_nodes as nodes_list
 from .tools.pod_operations import k8s_exec_command
@@ -170,7 +283,7 @@ async def k8s_update_resources(
 @mcp.tool()
 async def k8s_diagnose_application(context: str, namespace: str, app_name: str, resource_type: str = "deployment"):
     """Diagnose issues with a Kubernetes application by checking resource status, events, and logs."""
-    return await application_diagnose(context, namespace, app_name, resource_type)
+    return await diagnose_app(context, namespace, app_name, resource_type)
 
 
 @mcp.tool()
@@ -195,7 +308,7 @@ async def k8s_describe(
     all_namespaces: bool = False,
 ):
     """Show detailed information about a specific resource or group of resources."""
-    return await resource_describe(context, resource_type, name, namespace, selector, all_namespaces)
+    return await describe_resource(context, resource_type, name, namespace, selector, all_namespaces)
 
 
 # Register new tools
@@ -270,13 +383,13 @@ async def k8s_set_resources_for_container(
 @mcp.tool()
 async def k8s_cordon_node(context: str, node_name: str):
     """Mark a node as unschedulable."""
-    return await k8s_cordon(context, node_name)
+    return await cordon_node(context, node_name)
 
 
 @mcp.tool()
 async def k8s_uncordon_node(context: str, node_name: str):
     """Mark a node as schedulable."""
-    return await k8s_uncordon(context, node_name)
+    return await uncordon_node(context, node_name)
 
 
 @mcp.tool()
@@ -289,19 +402,19 @@ async def k8s_drain_node(
     timeout: int = None,
 ):
     """Drain a node in preparation for maintenance."""
-    return await k8s_drain(context, node_name, force, ignore_daemonsets, delete_local_data, timeout)
+    return await drain_node(context, node_name, force, ignore_daemonsets, delete_local_data, timeout)
 
 
 @mcp.tool()
 async def k8s_taint_node(context: str, node_name: str, key: str, value: str = None, effect: str = "NoSchedule"):
     """Update the taints on one or more nodes."""
-    return await k8s_taint(context, node_name, key, value, effect)
+    return await taint_node(context, node_name, key, value, effect)
 
 
 @mcp.tool()
 async def k8s_untaint_node(context: str, node_name: str, key: str, effect: str = None):
     """Remove the taints from a node."""
-    return await k8s_untaint(context, node_name, key, effect)
+    return await untaint_node(context, node_name, key, effect)
 
 
 @mcp.tool()
@@ -316,7 +429,7 @@ async def k8s_pod_exec(
     timeout: int = None,
 ):
     """Execute a command in a container."""
-    return await k8s_exec_command(context, pod_name, command, container, namespace, stdin, tty, timeout)
+    return await pod_exec(context, pod_name, command, container, namespace, stdin, tty, timeout)
 
 
 def main():
