@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "kubernetes": {
+      "command": "pipx",
+      "args": ["run", "k8s-multicluster-mcp"],
+      "env": {
+        "KUBECONFIG_DIR": "/Users/yourname/.kube/configs"
+      }
+    }
+  }
+} 
