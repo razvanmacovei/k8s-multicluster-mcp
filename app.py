@@ -5,14 +5,14 @@ import os
 # Create MCP server
 mcp = FastMCP("KubernetesMCP")
 
-from .tools.contexts import list_k8s_contexts as contexts_list
-from .tools.namespaces import list_k8s_namespaces as namespaces_list
-from .tools.nodes import list_k8s_nodes as nodes_list
-from .tools.pods import list_k8s_resources as resources_list, get_k8s_pod_logs as pod_logs_get
-from .tools.events import list_k8s_events as events_list
-from .tools.resources import get_k8s_resource as resource_get
-from .tools.metrics import top_k8s_nodes as nodes_top, top_k8s_pods as pods_top
-from .tools.rollouts import (
+from src.tools.contexts import list_k8s_contexts as contexts_list
+from src.tools.namespaces import list_k8s_namespaces as namespaces_list
+from src.tools.nodes import list_k8s_nodes as nodes_list
+from src.tools.pods import list_k8s_resources as resources_list, get_k8s_pod_logs as pod_logs_get
+from src.tools.events import list_k8s_events as events_list
+from src.tools.resources import get_k8s_resource as resource_get
+from src.tools.metrics import top_k8s_nodes as nodes_top, top_k8s_pods as pods_top
+from src.tools.rollouts import (
     get_k8s_rollout_status as rollout_status_get, 
     get_k8s_rollout_history as rollout_history_get,
     k8s_rollout_undo as rollout_undo,
@@ -20,35 +20,35 @@ from .tools.rollouts import (
     k8s_rollout_pause as rollout_pause,
     k8s_rollout_resume as rollout_resume
 )
-from .tools.scaling import (
+from src.tools.scaling import (
     k8s_scale_resource as resource_scale, 
     k8s_autoscale_resource as resource_autoscale,
     k8s_update_resources as resource_update_resources
 )
-from .tools.diagnosis import diagnose_k8s_application as application_diagnose
-from .tools.api_discovery import list_k8s_apis as apis_list, list_k8s_crds as crds_list
-from .tools.describe import describe_k8s_resource as resource_describe
+from src.tools.diagnosis import diagnose_k8s_application as application_diagnose
+from src.tools.api_discovery import list_k8s_apis as apis_list, list_k8s_crds as crds_list
+from src.tools.describe import describe_k8s_resource as resource_describe
 
 # Import new tools
-from .tools.resource_management import (
+from src.tools.resource_management import (
     k8s_create, 
     k8s_apply, 
     k8s_patch,
     k8s_label,
     k8s_annotate
 )
-from .tools.workload_management import (
+from src.tools.workload_management import (
     k8s_expose,
     k8s_set_resources
 )
-from .tools.node_management import (
+from src.tools.node_management import (
     k8s_cordon,
     k8s_uncordon,
     k8s_drain,
     k8s_taint,
     k8s_untaint
 )
-from .tools.pod_operations import k8s_exec_command
+from src.tools.pod_operations import k8s_exec_command
 
 # Register tools using decorators
 @mcp.tool()
@@ -251,9 +251,7 @@ async def k8s_pod_exec(context: str, pod_name: str, command: str, container: str
     """Execute a command in a container."""
     return await k8s_exec_command(context, pod_name, command, container, namespace, stdin, tty, timeout)
 
-
-def main():
-    """Main entry point for the k8s-multicluster-mcp server."""
+if __name__ == "__main__":
     # Set kubeconfig directory from environment variable if provided
     kubeconfig_dir = os.environ.get("KUBECONFIG_DIR")
     if kubeconfig_dir:
@@ -267,8 +265,4 @@ def main():
     # FastMCP appears to only support stdio transport
     print("Starting Kubernetes MCP server with stdio transport...")
     # Run with stdio transport by default
-    mcp.run(transport="stdio")
-
-
-if __name__ == "__main__":
-    main() 
+    mcp.run(transport="stdio") 

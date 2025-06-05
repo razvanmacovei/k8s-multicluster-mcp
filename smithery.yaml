@@ -1,5 +1,4 @@
 # Smithery configuration file: https://smithery.ai/docs/build/project-config
-# Note: This method is being deprecated in favor of direct pipx configuration
 
 startCommand:
   type: stdio
@@ -14,6 +13,6 @@ startCommand:
   commandFunction:
     # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
     |-
-    (config) => ({command: 'pipx', args: ['run', 'k8s-multicluster-mcp'], env: config.kubeconfigDir ? {KUBECONFIG_DIR: config.kubeconfigDir} : {}})
+    (config) => ({command: 'python3', args: ['app.py'], env: config.kubeconfigDir ? {KUBECONFIG_DIR: config.kubeconfigDir} : {}})
   exampleConfig:
     kubeconfigDir: /path/to/your/kubeconfigs
