@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "k8s-multicluster": {
+      "command": "python3",
+      "args": ["app.py"],
+      "env": {
+        "KUBECONFIG_DIR": "/path/to/your/kubeconfigs"
+      }
+    }
+  }
+} 

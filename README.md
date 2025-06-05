@@ -3,6 +3,23 @@
 
 An MCP (Model Context Protocol) server application for Kubernetes operations, providing a standardized API to interact with multiple Kubernetes clusters simultaneously using multiple kubeconfig files.
 
+## Quick Install
+
+Add this MCP server to Cursor with one click:
+
+[![Add to Cursor](https://img.shields.io/badge/Add%20to%20Cursor-000000?style=for-the-badge&logo=cursor&logoColor=white)](cursor://anysphere.cursor-deeplink/mcp/install?name=k8s-multicluster&config=eyJjb21tYW5kIjoicHl0aG9uMyIsImFyZ3MiOlsiYXBwLnB5Il0sImVudiI6eyJLVUJFQ09ORklHX0RJUiI6Ii9wYXRoL3RvL3lvdXIva3ViZWNvbmZpZ3MifX0=)
+
+**Note:** After installation, you'll need to update the `KUBECONFIG_DIR` environment variable to point to your actual kubeconfig directory.
+
+### Alternative Installation Links
+
+Different deployment scenarios require different configurations. Choose the one that fits your setup:
+
+- **Development (current directory):** [![Add to Cursor](https://img.shields.io/badge/Add%20to%20Cursor-000000?style=flat&logo=cursor&logoColor=white)](cursor://anysphere.cursor-deeplink/mcp/install?name=k8s-multicluster&config=eyJjb21tYW5kIjoicHl0aG9uMyIsImFyZ3MiOlsiYXBwLnB5Il0sImVudiI6eyJLVUJFQ09ORklHX0RJUiI6Ii9wYXRoL3RvL3lvdXIva3ViZWNvbmZpZ3MifX0=)
+- **With UV package manager:** [![Add to Cursor](https://img.shields.io/badge/Add%20to%20Cursor-000000?style=flat&logo=cursor&logoColor=white)](cursor://anysphere.cursor-deeplink/mcp/install?name=k8s-multicluster&config=eyJjb21tYW5kIjoidXYiLCJhcmdzIjpbIi0tZGlyZWN0b3J5IiwiLiIsInJ1biIsImFwcC5weSJdLCJlbnYiOnsiS1VCRUNPTkZJR19ESVIiOiIvcGF0aC90by95b3VyL2t1YmVjb25maWdzIn19)
+
+> 💡 **Tip:** Run `node generate-all-deeplinks.js` to see all available configuration options and their corresponding deep links.
+
 ### MCPO Server Configuration
 
 Add the following configuration to your MCPO server's `config.json` file (e.g., in Claude Desktop):
@@ -28,7 +45,49 @@ The server expects multiple kubeconfig files to be placed in the directory you s
 
 ## Installation
 
-### Installing via Smithery
+### Option 1: One-Click Install (Recommended)
+
+Click the "Add to Cursor" button above for the fastest installation method. After installation:
+
+1. Open Cursor Settings → Features → MCP
+2. Find "k8s-multicluster" in your server list
+3. Edit the server configuration to update the `KUBECONFIG_DIR` environment variable to your actual kubeconfig directory path
+
+### Option 2: Manual Configuration
+
+Add the following to your Cursor MCP configuration file (`~/.cursor/mcp.json` or `.cursor/mcp.json` in your project):
+
+#### Using Python3 directly:
+```json
+{
+  "mcpServers": {
+    "k8s-multicluster": {
+      "command": "python3",
+      "args": ["/path/to/k8s-multicluster-mcp/app.py"],
+      "env": {
+        "KUBECONFIG_DIR": "/path/to/your/kubeconfigs"
+      }
+    }
+  }
+}
+```
+
+#### Using UV (recommended for development):
+```json
+{
+  "mcpServers": {
+    "k8s-multicluster": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/k8s-multicluster-mcp", "run", "app.py"],
+      "env": {
+        "KUBECONFIG_DIR": "/path/to/your/kubeconfigs"
+      }
+    }
+  }
+}
+```
+
+### Option 3: Installing via Smithery
 
 To install Multi Cluster Kubernetes Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp):
 
