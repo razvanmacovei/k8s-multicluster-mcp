@@ -1,22 +1,18 @@
 # Multi Cluster Kubernetes MCP Server
-
-[![PyPI version](https://badge.fury.io/py/k8s-multicluster-mcp.svg)](https://badge.fury.io/py/k8s-multicluster-mcp)
-[![Python versions](https://img.shields.io/pypi/pyversions/k8s-multicluster-mcp.svg)](https://pypi.org/project/k8s-multicluster-mcp/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/razvanmacovei/k8s_multicluster_mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/razvanmacovei/k8s_multicluster_mcp/actions/workflows/ci.yml)
+[![smithery badge](https://smithery.ai/badge/@razvanmacovei/k8s-multicluster-mcp)](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp)
 
 An MCP (Model Context Protocol) server application for Kubernetes operations, providing a standardized API to interact with multiple Kubernetes clusters simultaneously using multiple kubeconfig files.
 
-## 🚀 Quick Start
+### MCPO Server Configuration
 
-No installation required! Just configure your MCP client (e.g., Claude Desktop) by adding to `config.json`:
+Add the following configuration to your MCPO server's `config.json` file (e.g., in Claude Desktop):
 
 ```json
 {
   "mcpServers": {
     "kubernetes": {
-      "command": "pipx",
-      "args": ["run", "k8s-multicluster-mcp"],
+      "command": "python3",
+      "args": ["/path/to/k8s_multicluster_mcp/app.py"],
       "env": {
         "KUBECONFIG_DIR": "/path/to/your/kubeconfigs"
       }
@@ -25,22 +21,67 @@ No installation required! Just configure your MCP client (e.g., Claude Desktop) 
 }
 ```
 
-> **Note**: Replace `/path/to/your/kubeconfigs` with the actual path to your kubeconfig files directory.
+> Replace `/path/to/your/kubeconfigs` with the actual path to your kubeconfig files directory.
 
-The first time you use it, `pipx` will automatically download and install the package in an isolated environment.
+The server expects multiple kubeconfig files to be placed in the directory you specified. Each kubeconfig file represents a different Kubernetes cluster that you can interact with.
 
-## 📋 Prerequisites
 
+## Installation
+
+### Installing via Smithery
+
+To install Multi Cluster Kubernetes Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp):
+
+```bash
+npx -y @smithery/cli install @razvanmacovei/k8s-multicluster-mcp --client claude
+```
+
+### Prerequisites
 - Python 3.8 or higher
-- `pipx` installed (`brew install pipx` on macOS, or see [pipx installation](https://pipx.pypa.io/stable/installation/))
-- One or more kubeconfig files in a directory
-- kubectl (optional, for verification)
+- pip package manager
+- uv package manager (optional, recommended for faster installation)
 
-## 🎯 Features
+### Setting up a Local Environment
 
-The Kubernetes MCP Server provides a comprehensive set of tools for interacting with Kubernetes clusters:
+1. Clone the repository
+   ```bash
+   git clone https://github.com/razvanmacovei/k8s_multicluster_mcp.git
+   cd k8s_multicluster_mcp
+   ```
 
-### Multi-Cluster Management
+2. Create a virtual environment
+   ```bash
+   # Using venv (built-in)
+   python3 -m venv .venv
+   
+   # Activate the virtual environment
+   # On Windows
+   .venv\Scripts\activate
+   
+   # On macOS/Linux
+   source .venv/bin/activate
+   ```
+
+3. Install dependencies
+   ```bash
+   # Using pip
+   pip install -r requirements.txt
+   
+   # Or using uv (faster)
+   uv pip install -r requirements.txt
+   ```
+
+4. Configure your environment
+   - Make sure you have your kubeconfig files ready
+   - Set the `KUBECONFIG_DIR` environment variable to point to your kubeconfig directory
+
+5. Run the application
+   ```bash
+   python3 app.py
+   ```
+
+
+## Multi-Cluster Management
 
 This MCP server is designed specifically to work with multiple Kubernetes clusters:
 
@@ -49,18 +90,38 @@ This MCP server is designed specifically to work with multiple Kubernetes cluste
 - **Cross-Cluster Operations**: Compare resources, status, and configurations across different clusters
 - **Centralized Management**: Manage all your Kubernetes environments (dev, staging, production) from a single interface
 
-### Core Capabilities
+## Features
 
-- **Cluster Management**: List contexts, namespaces, nodes, and resources
-- **Resource Operations**: Create, update, patch, label, and annotate resources
-- **Pod Operations**: Get logs, execute commands, and manage pod lifecycle
-- **Rollout Management**: Deploy, rollback, pause, resume, and restart rollouts
-- **Scaling**: Manual scaling and HPA configuration
-- **Node Management**: Cordon, uncordon, drain, taint operations
-- **Metrics & Monitoring**: Resource usage for nodes and pods
-- **Diagnostics**: Application troubleshooting and health checks
+The Kubernetes MCP Server provides a comprehensive set of tools for interacting with Kubernetes clusters:
 
-## 📖 Usage Examples
+### Cluster Management
+
+- List available Kubernetes contexts
+- List namespaces and nodes in a cluster
+- List and retrieve detailed information about Kubernetes resources
+- Discover available APIs and Custom Resource Definitions (CRDs)
+
+### Resource Management
+
+- List and inspect any Kubernetes resource (pods, deployments, services, etc.)
+- Get logs from pods
+- Get detailed status information about deployments, statefulsets, and daemonsets
+- Describe resources with detailed information similar to `kubectl describe`
+
+### Metrics and Monitoring
+
+- Display resource usage (CPU/memory) of nodes
+- Display resource usage (CPU/memory) of pods
+- Diagnose application issues by checking status, events, and logs
+
+### Rollout Management
+
+- Get rollout status and history
+- Undo, restart, pause, and resume rollouts
+- Scale and autoscale resources
+- Update resource constraints (CPU/memory limits and requests)
+
+## Usage Examples
 
 Here are some examples of how to use the Kubernetes MCP Server with AI assistants:
 
@@ -108,10 +169,21 @@ My application 'web-app' in namespace 'web' is experiencing OOM issues. Can you 
 I need to rollback my 'api-gateway' deployment in the 'services' namespace to the previous version.
 ```
 
-### Create New Resources
+### Discover API Resources
 
 ```
-Create a new deployment with the following YAML:
+What APIs are available in my Kubernetes cluster?
+```
+
+### Describe Resources
+
+```
+Can you describe the pod 'my-pod' in the 'default' namespace?
+```
+
+### Create New Resources
+
+```Create a new deployment with the following YAML:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -134,13 +206,56 @@ spec:
         - containerPort: 80
 ```
 
+### Expose a Deployment
+
+```
+Expose my 'backend' deployment in the 'default' namespace as a service on port 80 targeting port 8080.
+```
+
+### Execute Command in a Pod
+
+```
+Execute the command 'ls -la /app' in the 'app' container of pod 'web-app-1234' in the 'default' namespace.
+```
+
+
 ### Node Maintenance
 
 ```
 I need to perform maintenance on node 'worker-1'. Please cordon it, drain it, and then uncordon it after I complete my work.
 ```
 
-## 🛠️ Implemented Tools
+### Apply Configuration
+
+```
+Apply this configuration to update my existing deployment:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: existing-deployment
+  namespace: default
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: app
+        image: myapp:v2
+```
+
+### Patch a Resource
+
+```
+Patch the 'my-configmap' ConfigMap in the 'default' namespace to add a new key 'NEW_SETTING' with value 'enabled'.
+```
+
+### Update Labels
+
+```
+Add the label 'environment=production' to the 'api' deployment in the 'backend' namespace.
+```
+
+## Implemented Tools
 
 The server implements the following MCP tools:
 
@@ -208,51 +323,6 @@ The server implements the following MCP tools:
 
 - `k8s_pod_exec`: Execute a command in a container
 
-## 🔧 Configuration
-
-### Environment Variables
-
-- `KUBECONFIG_DIR`: Directory containing your kubeconfig files (required)
-- Individual kubeconfig files should be placed in this directory
-
-### Version Pinning
-
-To use a specific version, update your config:
-
-```json
-{
-  "args": ["run", "k8s-multicluster-mcp==1.1.0"]
-}
-```
-
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [FastMCP](https://github.com/jlowin/fastmcp) for the MCP protocol implementation
-- Uses the official [Kubernetes Python client](https://github.com/kubernetes-client/python)
-
-## 📚 Resources
-
-- [MCP Protocol Documentation](https://modelcontextprotocol.io/)
-- [Kubernetes API Reference](https://kubernetes.io/docs/reference/kubernetes-api/)
-- [Project Repository](https://github.com/razvanmacovei/k8s_multicluster_mcp)
-
-## 📖 Additional Documentation
-
-- [API Reference](docs/API_REFERENCE.md) - Complete list of all MCP tools and their parameters
-- [Troubleshooting Guide](TROUBLESHOOTING.md) - Common issues and solutions
-- [Contributing Guide](CONTRIBUTING.md) - How to contribute to the project
-- [Release Checklist](RELEASE_CHECKLIST.md) - For maintainers
