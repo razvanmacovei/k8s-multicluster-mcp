@@ -14,7 +14,7 @@ By participating in this project, you agree to abide by our code of conduct:
 
 ### Prerequisites
 
-- Python 3.10 or higher
+- Python 3.8 or higher
 - `pipx` for testing package installation
 - `git` for version control
 - A Kubernetes cluster (or kind/minikube) for testing
@@ -23,8 +23,8 @@ By participating in this project, you agree to abide by our code of conduct:
 
 1. **Fork and clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/k8s-multicluster-mcp.git
-   cd k8s-multicluster-mcp
+   git clone https://github.com/YOUR_USERNAME/k8s_multicluster_mcp.git
+   cd k8s_multicluster_mcp
    ```
 
 2. **Create a virtual environment**
@@ -33,16 +33,15 @@ By participating in this project, you agree to abide by our code of conduct:
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Install in development mode**
+3. **Install development dependencies**
    ```bash
-   pip install -e .
-   pip install pytest black
+   pip install -r requirements.txt
+   pip install pytest pytest-asyncio pytest-cov black isort flake8 mypy
    ```
 
-4. **Set up pre-commit hooks (optional but recommended):**
+4. **Install the package in development mode**
    ```bash
-   pip install pre-commit
-   pre-commit install
+   pip install -e .
    ```
 
 ## 📝 Development Workflow
@@ -63,11 +62,17 @@ git checkout -b feature/your-feature-name
 ### 3. Format Your Code
 
 ```bash
-# Format all code
-black src/
+# Format with black
+black src/ tests/
 
-# Check formatting without changes
-black --check src/
+# Sort imports with isort
+isort src/ tests/
+
+# Check with flake8
+flake8 src/ tests/ --max-line-length=120 --extend-ignore=E203,W503
+
+# Type check with mypy
+mypy src/ --ignore-missing-imports
 ```
 
 ### 4. Write Tests

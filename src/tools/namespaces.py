@@ -1,25 +1,22 @@
+from typing import List, Dict, Any
 import os
-from typing import List
-
 from kubernetes import client
-
 from ..utils.k8s_client import KubernetesClient
 
 # Initialize client with kubeconfig directory from environment or default
-kubeconfig_dir = os.environ.get("KUBECONFIG_DIR", os.path.expanduser("~/.kube"))
+kubeconfig_dir = os.environ.get('KUBECONFIG_DIR', os.path.expanduser('~/.kube'))
 k8s_client = KubernetesClient(kubeconfig_dir)
-
 
 async def list_k8s_namespaces(context: str) -> List[str]:
     """
     List all namespaces in a specified Kubernetes context.
-
+    
     Args:
         context (str): Name of the Kubernetes context to use
-
+        
     Returns:
         List[str]: A list of namespace names
-
+        
     Raises:
         RuntimeError: If there's an error accessing the Kubernetes API
     """
@@ -32,4 +29,4 @@ async def list_k8s_namespaces(context: str) -> List[str]:
     except ValueError as e:
         raise RuntimeError(str(e))
     except Exception as e:
-        raise RuntimeError(f"Failed to list namespaces in context '{context}': {str(e)}")
+        raise RuntimeError(f"Failed to list namespaces in context '{context}': {str(e)}")   
