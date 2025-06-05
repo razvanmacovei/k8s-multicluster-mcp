@@ -36,7 +36,7 @@ By participating in this project, you agree to abide by our code of conduct:
 3. **Install development dependencies**
    ```bash
    pip install -r requirements.txt
-   pip install pytest pytest-asyncio pytest-cov black isort flake8 mypy
+   pip install pytest pytest-asyncio pytest-cov black flake8 mypy
    ```
 
 4. **Install the package in development mode**
