@@ -1,5 +1,5 @@
 # Multi Cluster Kubernetes MCP Server
-[![smithery badge](https://smithery.ai/badge/@razvanmacovei/k8s-multicluster-mcp)](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp)
+[![smithery badge](https://smithery.ai/badge/@razvanmacovei/k8s_multicluster_mcp)](https://smithery.ai/server/@razvanmacovei/k8s_multicluster_mcp)
 
 An MCP (Model Context Protocol) server application for Kubernetes operations, providing a standardized API to interact with multiple Kubernetes clusters simultaneously using multiple kubeconfig files.
 
@@ -12,7 +12,7 @@ Add the following configuration to your MCPO server's `config.json` file (e.g., 
   "mcpServers": {
     "kubernetes": {
       "command": "python3",
-      "args": ["/path/to/k8s-multicluster-mcp/app.py"],
+      "args": ["/path/to/k8s_multicluster_mcp/app.py"],
       "env": {
         "KUBECONFIG_DIR": "/path/to/your/kubeconfigs"
       }
@@ -30,10 +30,10 @@ The server expects multiple kubeconfig files to be placed in the directory you s
 
 ### Installing via Smithery
 
-To install Multi Cluster Kubernetes Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp):
+To install Multi Cluster Kubernetes Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@razvanmacovei/k8s_multicluster_mcp):
 
 ```bash
-npx -y @smithery/cli install @razvanmacovei/k8s-multicluster-mcp --client claude
+npx -y @smithery/cli install @razvanmacovei/k8s_multicluster_mcp --client claude
 ```
 
 ### Prerequisites
@@ -45,8 +45,8 @@ npx -y @smithery/cli install @razvanmacovei/k8s-multicluster-mcp --client claude
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/razvanmacovei/k8s-multicluster-mcp.git
-   cd k8s-multicluster-mcp
+   git clone https://github.com/razvanmacovei/k8s_multicluster_mcp.git
+   cd k8s_multicluster_mcp
    ```
 
 2. Create a virtual environment
