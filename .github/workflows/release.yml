@@ -1,0 +1,129 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.1.0)'
+        required: true
+        type: string
+
+jobs:
+  validate-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get version
+        id: get_version
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+          
+      - name: Validate version format
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version format: $VERSION"
+            echo "Version must be in format X.Y.Z"
+            exit 1
+          fi
+          
+      - name: Check version in pyproject.toml
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          PYPROJECT_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          if [[ "$VERSION" != "$PYPROJECT_VERSION" ]]; then
+            echo "Version mismatch!"
+            echo "Tag/Input version: $VERSION"
+            echo "pyproject.toml version: $PYPROJECT_VERSION"
+            echo "Please update pyproject.toml version before releasing"
+            exit 1
+          fi
+
+  create-release:
+    needs: validate-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for changelog
+      
+      - name: Generate changelog
+        id: changelog
+        run: |
+          VERSION=${{ needs.validate-version.outputs.version }}
+          echo "Generating changelog for version $VERSION"
+          
+          # Get the previous tag
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          if [[ -z "$PREVIOUS_TAG" ]]; then
+            echo "No previous tag found, including all commits"
+            COMMITS=$(git log --pretty=format:"- %s (%an)" --no-merges)
+          else
+            echo "Previous tag: $PREVIOUS_TAG"
+            COMMITS=$(git log --pretty=format:"- %s (%an)" --no-merges ${PREVIOUS_TAG}..HEAD)
+          fi
+          
+          # Create changelog content
+          cat > RELEASE_NOTES.md << EOF
+          ## What's Changed in v$VERSION
+          
+          ### Commits
+          $COMMITS
+          
+          ### Installation
+          
+          Configure your MCP client (e.g., Claude Desktop) by adding to \`config.json\`:
+          
+          \`\`\`json
+          {
+            "mcpServers": {
+              "kubernetes": {
+                "command": "pipx",
+                "args": ["run", "k8s-multicluster-mcp==$VERSION"],
+                "env": {
+                  "KUBECONFIG_DIR": "/path/to/your/kubeconfigs"
+                }
+              }
+            }
+          }
+          \`\`\`
+          
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREVIOUS_TAG}...v$VERSION
+          EOF
+          
+          cat RELEASE_NOTES.md
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.validate-version.outputs.version }}
+          name: v${{ needs.validate-version.outputs.version }}
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+          
+  trigger-publish:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger publish workflow
+        run: |
+          echo "Release created successfully!"
+          echo "The publish workflow will be triggered automatically by the release event"
+          echo "Monitor the publish workflow for PyPI deployment status" 
