@@ -80,6 +80,123 @@ npx -y @smithery/cli install @razvanmacovei/k8s-multicluster-mcp --client claude
    python3 app.py
    ```
 
+## Docker Usage
+
+### Using Pre-built Images from GitHub Container Registry
+
+The easiest way to use this MCP server is with the pre-built Docker images available on GitHub Container Registry.
+
+#### Pull and Run
+```bash
+# Pull the latest image
+docker pull ghcr.io/razvanmacovei/k8s-multicluster-mcp:latest
+
+# Run with your kubeconfig directory mounted
+docker run -v ~/.kube:/app/kubeconfigs:ro \
+  -e KUBECONFIG_DIR=/app/kubeconfigs \
+  ghcr.io/razvanmacovei/k8s-multicluster-mcp:latest
+```
+
+#### For Multiple Kubeconfig Files
+```bash
+# If you have multiple kubeconfig files in a directory
+docker run -v /path/to/your/kubeconfigs:/app/kubeconfigs:ro \
+  -e KUBECONFIG_DIR=/app/kubeconfigs \
+  ghcr.io/razvanmacovei/k8s-multicluster-mcp:latest
+```
+
+#### Using with Claude Desktop
+Add this to your Claude Desktop `config.json`:
+```json
+{
+  "mcpServers": {
+    "kubernetes": {
+      "command": "docker",
+      "args": [
+        "run", "--rm", "-i",
+        "-v", "/path/to/your/kubeconfigs:/app/kubeconfigs:ro",
+        "-e", "KUBECONFIG_DIR=/app/kubeconfigs",
+        "ghcr.io/razvanmacovei/k8s-multicluster-mcp:latest"
+      ]
+    }
+  }
+}
+```
+
+### Building Docker Image Locally
+
+If you want to build the Docker image locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/razvanmacovei/k8s-multicluster-mcp.git
+cd k8s-multicluster-mcp
+
+# Build the image
+docker build -t k8s-multicluster-mcp:local .
+
+# Run your local build
+docker run -v ~/.kube:/app/kubeconfigs:ro \
+  -e KUBECONFIG_DIR=/app/kubeconfigs \
+  k8s-multicluster-mcp:local
+```
+
+#### Multi-Architecture Build (Advanced)
+```bash
+# Set up buildx for multi-architecture builds
+docker buildx create --use
+
+# Build for multiple architectures
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t k8s-multicluster-mcp:multi-arch .
+
+# Build and push to your own registry
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t your-registry/k8s-multicluster-mcp:latest \
+  --push .
+```
+
+### Available Image Tags
+
+- `latest`: Latest stable release
+- `v1.0.3`: Specific version tags
+- `main`: Latest development build (may be unstable)
+
+### Docker Image Features
+
+- **Multi-Architecture**: Supports both `linux/amd64` and `linux/arm64`
+- **Security**: Runs as non-root user
+- **Optimized**: Multi-stage build for smaller image size
+- **Production Ready**: Includes health checks and proper signal handling
+
+### Troubleshooting Docker Usage
+
+#### Permission Issues
+```bash
+# If you encounter permission issues with kubeconfig files
+docker run -v ~/.kube:/app/kubeconfigs:ro \
+  -e KUBECONFIG_DIR=/app/kubeconfigs \
+  --user $(id -u):$(id -g) \
+  ghcr.io/razvanmacovei/k8s-multicluster-mcp:latest
+```
+
+#### Debugging
+```bash
+# Run with debugging information
+docker run -v ~/.kube:/app/kubeconfigs:ro \
+  -e KUBECONFIG_DIR=/app/kubeconfigs \
+  -e PYTHONUNBUFFERED=1 \
+  ghcr.io/razvanmacovei/k8s-multicluster-mcp:latest
+```
+
+#### Interactive Shell
+```bash
+# Get a shell inside the container for debugging
+docker run -it --entrypoint /bin/bash \
+  -v ~/.kube:/app/kubeconfigs:ro \
+  -e KUBECONFIG_DIR=/app/kubeconfigs \
+  ghcr.io/razvanmacovei/k8s-multicluster-mcp:latest
+```
 
 ## Multi-Cluster Management
 
