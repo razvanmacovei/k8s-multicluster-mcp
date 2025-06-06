@@ -5,5 +5,4 @@ pydantic
 pyyaml
 fastapi
 uvicorn
-json-patch
 jsonpatch
