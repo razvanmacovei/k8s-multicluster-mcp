@@ -12,7 +12,7 @@ Add the following configuration to your MCPO server's `config.json` file (e.g., 
   "mcpServers": {
     "kubernetes": {
       "command": "python3",
-      "args": ["/path/to/k8s_multicluster_mcp/app.py"],
+      "args": ["/path/to/k8s-multicluster-mcp/app.py"],
       "env": {
         "KUBECONFIG_DIR": "/path/to/your/kubeconfigs"
       }
@@ -45,8 +45,8 @@ npx -y @smithery/cli install @razvanmacovei/k8s-multicluster-mcp --client claude
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/razvanmacovei/k8s_multicluster_mcp.git
-   cd k8s_multicluster_mcp
+   git clone https://github.com/razvanmacovei/k8s-multicluster-mcp.git
+   cd k8s-multicluster-mcp
    ```
 
 2. Create a virtual environment
