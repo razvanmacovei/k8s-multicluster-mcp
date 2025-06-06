@@ -172,5 +172,3 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-
-DOCKER_DISTRIBUTION_PLAN.md
