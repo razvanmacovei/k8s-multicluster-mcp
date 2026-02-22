@@ -2,6 +2,7 @@ from typing import List, Dict, Any, Optional
 import os
 from kubernetes import client
 from ..utils.k8s_client import KubernetesClient
+from ..utils.pluralize import pluralize_kind
 
 # Initialize client with kubeconfig directory from environment or default
 kubeconfig_dir = os.environ.get('KUBECONFIG_DIR', os.path.expanduser('~/.kube'))
@@ -164,13 +165,13 @@ async def list_k8s_resources(context: str, kind: str, namespace: Optional[str] =
                     group=group,
                     version=version,
                     namespace=namespace,
-                    plural=kind.lower() + "s"  # This is a simplification, might need to be adjusted
+                    plural=pluralize_kind(kind)
                 )
             else:
                 response = api.list_cluster_custom_object(
                     group=group,
                     version=version,
-                    plural=kind.lower() + "s"  # This is a simplification, might need to be adjusted
+                    plural=pluralize_kind(kind)
                 )
                 
             # For custom objects, return raw data as the structure varies widely

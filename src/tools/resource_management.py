@@ -4,9 +4,9 @@ import yaml
 import json
 from kubernetes import client
 from kubernetes.client.rest import ApiException
-from io import StringIO
 
 from ..utils.k8s_client import KubernetesClient
+from ..utils.pluralize import pluralize_kind
 
 # Initialize client with kubeconfig directory from environment
 kubeconfig_dir = os.environ.get('KUBECONFIG_DIR', os.path.expanduser('~/.kube'))
@@ -67,7 +67,7 @@ async def k8s_create(context: str, yaml_content: str, namespace: Optional[str] =
                 group=group if group else '',
                 version=version,
                 namespace=resource_namespace,
-                plural=kind.lower() + 's',  # Simple pluralization
+                plural=pluralize_kind(kind),  # Simple pluralization
                 body=resource_dict
             )
         else:
@@ -75,7 +75,7 @@ async def k8s_create(context: str, yaml_content: str, namespace: Optional[str] =
             result = api.create_cluster_custom_object(
                 group=group if group else '',
                 version=version,
-                plural=kind.lower() + 's',  # Simple pluralization
+                plural=pluralize_kind(kind),  # Simple pluralization
                 body=resource_dict
             )
         
@@ -148,14 +148,14 @@ async def k8s_apply(context: str, yaml_content: str, namespace: Optional[str] = 
                     group=group if group else '',
                     version=version,
                     namespace=resource_namespace,
-                    plural=kind.lower() + 's',
+                    plural=pluralize_kind(kind),
                     name=name
                 )
             else:
                 existing = api.get_cluster_custom_object(
                     group=group if group else '',
                     version=version,
-                    plural=kind.lower() + 's',
+                    plural=pluralize_kind(kind),
                     name=name
                 )
             
@@ -165,7 +165,7 @@ async def k8s_apply(context: str, yaml_content: str, namespace: Optional[str] = 
                     group=group if group else '',
                     version=version,
                     namespace=resource_namespace,
-                    plural=kind.lower() + 's',
+                    plural=pluralize_kind(kind),
                     name=name,
                     body=resource_dict
                 )
@@ -173,7 +173,7 @@ async def k8s_apply(context: str, yaml_content: str, namespace: Optional[str] = 
                 result = api.patch_cluster_custom_object(
                     group=group if group else '',
                     version=version,
-                    plural=kind.lower() + 's',
+                    plural=pluralize_kind(kind),
                     name=name,
                     body=resource_dict
                 )
@@ -186,14 +186,14 @@ async def k8s_apply(context: str, yaml_content: str, namespace: Optional[str] = 
                         group=group if group else '',
                         version=version,
                         namespace=resource_namespace,
-                        plural=kind.lower() + 's',
+                        plural=pluralize_kind(kind),
                         body=resource_dict
                     )
                 else:
                     result = api.create_cluster_custom_object(
                         group=group if group else '',
                         version=version,
-                        plural=kind.lower() + 's',
+                        plural=pluralize_kind(kind),
                         body=resource_dict
                     )
                 action = "created"
@@ -282,7 +282,7 @@ async def k8s_patch(context: str, resource_type: str, name: str, patch: Dict[str
             # This is a simplified implementation and may not work for all resource types
             group = ""
             version = "v1"
-            plural = resource_type + "s"  # Simple pluralization
+            plural = pluralize_kind(resource_type)
             
             # Try to patch the resource
             if namespace:
