@@ -3,6 +3,4 @@ kubernetes>=28.1.0
 httpx
 pydantic
 pyyaml
-fastapi
-uvicorn
 jsonpatch
