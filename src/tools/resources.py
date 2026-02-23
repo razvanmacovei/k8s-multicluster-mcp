@@ -2,6 +2,7 @@ from typing import Dict, Any, Optional
 import os
 from kubernetes import client
 from ..utils.k8s_client import KubernetesClient
+from ..utils.pluralize import pluralize_kind
 
 # Initialize client with kubeconfig directory from environment or default
 kubeconfig_dir = os.environ.get('KUBECONFIG_DIR', os.path.expanduser('~/.kube'))
@@ -116,7 +117,7 @@ async def get_k8s_resource(context: str, namespace: str, kind: str, name: str,
                     group=group,
                     version=version,
                     namespace=namespace,
-                    plural=kind.lower() + "s",
+                    plural=pluralize_kind(kind),
                     name=name
                 )
             except client.rest.ApiException as e:

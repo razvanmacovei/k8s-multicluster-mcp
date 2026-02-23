@@ -1,11 +1,41 @@
 # Multi Cluster Kubernetes MCP Server
+
 [![smithery badge](https://smithery.ai/badge/@razvanmacovei/k8s-multicluster-mcp)](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
-An MCP (Model Context Protocol) server application for Kubernetes operations, providing a standardized API to interact with multiple Kubernetes clusters simultaneously using multiple kubeconfig files.
+An MCP (Model Context Protocol) server for managing multiple Kubernetes clusters simultaneously. Provides **60+ tools** covering cluster operations, resource management, monitoring, RBAC, storage, networking, and more -- all accessible through AI assistants like Claude Desktop.
 
-### MCPO Server Configuration
+## Quick Start
 
-Add the following configuration to your MCPO server's `config.json` file (e.g., in Claude Desktop):
+### Installing via Smithery
+
+```bash
+npx -y @smithery/cli install @razvanmacovei/k8s-multicluster-mcp --client claude
+```
+
+### Manual Installation
+
+```bash
+git clone https://github.com/razvanmacovei/k8s-multicluster-mcp.git
+cd k8s-multicluster-mcp
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python3 app.py
+```
+
+### Docker
+
+```bash
+docker build -t k8s-mcp .
+docker run -v ~/.kube:/root/.kube k8s-mcp
+```
+
+## Configuration
+
+### Claude Desktop / MCP Client
+
+Add to your MCP client configuration:
 
 ```json
 {
@@ -21,169 +51,235 @@ Add the following configuration to your MCPO server's `config.json` file (e.g., 
 }
 ```
 
-> Replace `/path/to/your/kubeconfigs` with the actual path to your kubeconfig files directory.
+### Environment Variables
 
-The server expects multiple kubeconfig files to be placed in the directory you specified. Each kubeconfig file represents a different Kubernetes cluster that you can interact with.
+| Variable | Default | Description |
+|---|---|---|
+| `KUBECONFIG_DIR` | `~/.kube` | Directory containing kubeconfig files. Each file can contain one or more contexts. |
 
-
-## Installation
-
-### Installing via Smithery
-
-To install Multi Cluster Kubernetes Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@razvanmacovei/k8s-multicluster-mcp):
-
-```bash
-npx -y @smithery/cli install @razvanmacovei/k8s-multicluster-mcp --client claude
-```
+Place your kubeconfig files in the configured directory. The server discovers all contexts across all files automatically.
 
 ### Prerequisites
-- Python 3.8 or higher
-- pip package manager
-- uv package manager (optional, recommended for faster installation)
 
-### Setting up a Local Environment
-
-1. Clone the repository
-   ```bash
-   git clone https://github.com/razvanmacovei/k8s-multicluster-mcp.git
-   cd k8s-multicluster-mcp
-   ```
-
-2. Create a virtual environment
-   ```bash
-   # Using venv (built-in)
-   python3 -m venv .venv
-   
-   # Activate the virtual environment
-   # On Windows
-   .venv\Scripts\activate
-   
-   # On macOS/Linux
-   source .venv/bin/activate
-   ```
-
-3. Install dependencies
-   ```bash
-   # Using pip
-   pip install -r requirements.txt
-   
-   # Or using uv (faster)
-   uv pip install -r requirements.txt
-   ```
-
-4. Configure your environment
-   - Make sure you have your kubeconfig files ready
-   - Set the `KUBECONFIG_DIR` environment variable to point to your kubeconfig directory
-
-5. Run the application
-   ```bash
-   python3 app.py
-   ```
-
+- Python 3.11 or higher
+- One or more kubeconfig files with valid cluster credentials
+- `metrics-server` installed in clusters for `k8s_top_*` and `k8s_cluster_info` tools
 
 ## Multi-Cluster Management
 
-This MCP server is designed specifically to work with multiple Kubernetes clusters:
+This server is purpose-built for managing multiple Kubernetes clusters:
 
-- **Multiple Kubeconfig Files**: Place your kubeconfig files in the directory specified by `KUBECONFIG_DIR`
-- **Context Selection**: Easily switch between clusters by specifying the context parameter in your commands
-- **Cross-Cluster Operations**: Compare resources, status, and configurations across different clusters
-- **Centralized Management**: Manage all your Kubernetes environments (dev, staging, production) from a single interface
+- **Automatic Discovery**: Scans all kubeconfig files in `KUBECONFIG_DIR` and aggregates contexts
+- **Partial Name Matching**: Use `prod` instead of `arn:aws:eks:us-east-1:123456:cluster/prod-cluster`
+- **Cross-Cluster Operations**: Compare resources, health, and configurations across clusters
+- **Context Caching**: Efficient 30-second TTL cache avoids re-reading kubeconfig files on every call
+- **Centralized Management**: Manage dev, staging, and production from a single interface
 
-## Features
+## Tools Reference (60+ tools)
 
-The Kubernetes MCP Server provides a comprehensive set of tools for interacting with Kubernetes clusters:
+### Cluster & Context Management (6 tools)
 
-### Cluster Management
+| Tool | Description |
+|---|---|
+| `k8s_get_contexts` | List all available contexts across all kubeconfig files |
+| `k8s_get_namespaces` | List all namespaces in a cluster |
+| `k8s_create_ns` | Create a new namespace with optional labels/annotations |
+| `k8s_delete_ns` | Delete a namespace (protects system namespaces) |
+| `k8s_get_nodes` | List all nodes with status, roles, capacity, and version |
+| `k8s_cluster_info` | Comprehensive cluster health summary (nodes, pods, deployments, warnings) |
 
-- List available Kubernetes contexts
-- List namespaces and nodes in a cluster
-- List and retrieve detailed information about Kubernetes resources
-- Discover available APIs and Custom Resource Definitions (CRDs)
+### Resource Discovery & Inspection (7 tools)
 
-### Resource Management
+| Tool | Description |
+|---|---|
+| `k8s_get_resources` | List resources of any kind (pods, deployments, services, ingress, etc.) |
+| `k8s_get_resource` | Get the complete definition of a single resource |
+| `k8s_get_pod_logs` | Get pod logs with duration filtering and container selection |
+| `k8s_get_events` | List cluster events in a namespace, sorted by most recent |
+| `k8s_describe` | Detailed resource description similar to `kubectl describe` |
+| `k8s_apis` | List all available API groups and resources in the cluster |
+| `k8s_crds` | List all Custom Resource Definitions with versions and scope |
 
-- List and inspect any Kubernetes resource (pods, deployments, services, etc.)
-- Get logs from pods
-- Get detailed status information about deployments, statefulsets, and daemonsets
-- Describe resources with detailed information similar to `kubectl describe`
+### Metrics & Monitoring (3 tools)
 
-### Metrics and Monitoring
+| Tool | Description |
+|---|---|
+| `k8s_top_nodes` | Display node CPU/memory usage alongside capacity |
+| `k8s_top_pods` | Display pod/container CPU/memory usage |
+| `k8s_diagnose_application` | Comprehensive app diagnostics with issue detection and recommendations |
 
-- Display resource usage (CPU/memory) of nodes
-- Display resource usage (CPU/memory) of pods
-- Diagnose application issues by checking status, events, and logs
+### Rollout Management (6 tools)
 
-### Rollout Management
+| Tool | Description |
+|---|---|
+| `k8s_rollout_status` | Get rollout status for deployment/statefulset/daemonset |
+| `k8s_rollout_history` | Get revision history |
+| `k8s_rollout_undo` | Roll back to a previous revision |
+| `k8s_rollout_restart` | Trigger a rolling restart |
+| `k8s_rollout_pause` | Pause an in-progress rollout |
+| `k8s_rollout_resume` | Resume a paused rollout |
 
-- Get rollout status and history
-- Undo, restart, pause, and resume rollouts
-- Scale and autoscale resources
-- Update resource constraints (CPU/memory limits and requests)
+### Scaling (3 tools)
+
+| Tool | Description |
+|---|---|
+| `k8s_scale_resource` | Scale deployment/statefulset/replicaset to N replicas |
+| `k8s_autoscale_resource` | Configure Horizontal Pod Autoscaler (HPA) |
+| `k8s_update_resources` | Update CPU/memory requests and limits for a container |
+
+### Resource CRUD (6 tools)
+
+| Tool | Description |
+|---|---|
+| `k8s_create_resource` | Create a resource from YAML/JSON content |
+| `k8s_apply_resource` | Apply configuration (create or update, like `kubectl apply`) |
+| `k8s_delete_resource` | Delete any resource type with optional force/grace period |
+| `k8s_patch_resource` | Update specific fields with strategic merge patch |
+| `k8s_label_resource` | Add or update labels on a resource |
+| `k8s_annotate_resource` | Add or update annotations on a resource |
+
+### Workload Management (3 tools)
+
+| Tool | Description |
+|---|---|
+| `k8s_expose_resource` | Expose a deployment/pod as a new Service |
+| `k8s_run_pod` | Create and run a pod with a specified image |
+| `k8s_set_resources_for_container` | Set resource limits/requests for containers |
+
+### Node Management (5 tools)
+
+| Tool | Description |
+|---|---|
+| `k8s_cordon_node` | Mark a node as unschedulable |
+| `k8s_uncordon_node` | Mark a node as schedulable |
+| `k8s_drain_node` | Drain a node by evicting pods (for maintenance) |
+| `k8s_taint_node` | Add taints to a node |
+| `k8s_untaint_node` | Remove taints from a node |
+
+### Pod Operations (1 tool)
+
+| Tool | Description |
+|---|---|
+| `k8s_pod_exec` | Execute a command in a container (supports quoted arguments) |
+
+### Secrets & ConfigMaps (6 tools)
+
+| Tool | Description |
+|---|---|
+| `k8s_list_secret` | List secrets with metadata (values hidden for security) |
+| `k8s_get_secret_detail` | Get a secret; optionally decode values |
+| `k8s_create_secret_resource` | Create a new secret (auto base64-encodes values) |
+| `k8s_list_configmap` | List ConfigMaps with their key names |
+| `k8s_get_configmap_detail` | Get a ConfigMap with full data contents |
+| `k8s_create_configmap_resource` | Create a new ConfigMap |
+
+### RBAC (5 tools)
+
+| Tool | Description |
+|---|---|
+| `k8s_get_roles` | List RBAC Roles with permission rules |
+| `k8s_get_clusterroles` | List RBAC ClusterRoles |
+| `k8s_get_rolebindings` | List RoleBindings (who has what role) |
+| `k8s_get_clusterrolebindings` | List ClusterRoleBindings |
+| `k8s_get_service_accounts` | List ServiceAccounts |
+
+### Storage (3 tools)
+
+| Tool | Description |
+|---|---|
+| `k8s_get_pvcs` | List PersistentVolumeClaims with status, capacity, and storage class |
+| `k8s_get_pvs` | List PersistentVolumes with capacity and bound claims |
+| `k8s_get_storage_classes` | List StorageClasses with provisioner and default status |
+
+### Networking (1 tool)
+
+| Tool | Description |
+|---|---|
+| `k8s_get_network_policies` | List NetworkPolicies with pod selectors and rule counts |
+
+### Job Management (2 tools)
+
+| Tool | Description |
+|---|---|
+| `k8s_get_jobs` | List Jobs with completion status and timing |
+| `k8s_get_cronjobs` | List CronJobs with schedule, suspend status, and last run |
 
 ## Usage Examples
 
-Here are some examples of how to use the Kubernetes MCP Server with AI assistants:
-
-### Multi-Cluster Operations
+### Cluster Health Check
 
 ```
-List all available contexts across my kubeconfig files.
+Give me a health overview of my production cluster.
 ```
+
+### Multi-Cluster Comparison
 
 ```
 Compare the number of pods running in the 'backend' namespace between my 'prod' and 'staging' contexts.
 ```
 
-```
-Show me resource usage across all nodes in my 'dev' and 'prod' clusters.
-```
-
 ### Diagnose Application Issues
 
 ```
-I have a deployment called 'my-app' in the 'production' namespace that's having issues. Can you check what's wrong?
+My deployment 'my-app' in the 'production' namespace is having issues. Can you diagnose what's wrong?
 ```
 
 ### Scale Resources
 
 ```
-I need to scale my 'backend' deployment in the 'default' namespace to 5 replicas.
+Scale the 'backend' deployment in the 'default' namespace to 5 replicas.
 ```
 
-### Investigate Resource Usage
+### Resource Management
 
 ```
-Show me the resource usage of nodes in my cluster.
+Delete the failed job 'data-migration-v1' in the 'batch' namespace.
 ```
 
-### Update Resource Limits
+```
+Create a new namespace called 'staging' with the label environment=staging.
+```
+
+### Secret Management
 
 ```
-My application 'web-app' in namespace 'web' is experiencing OOM issues. Can you increase the memory limit of the 'app' container to 512Mi?
+List all secrets in the 'production' namespace and show me the keys in the 'api-credentials' secret.
+```
+
+### RBAC Inspection
+
+```
+Show me all role bindings in the 'default' namespace -- who has access to what?
+```
+
+### Storage Overview
+
+```
+List all PVCs in the cluster and show which ones are Pending.
+```
+
+### Node Maintenance
+
+```
+Cordon node 'worker-3', drain it ignoring DaemonSets, then uncordon when maintenance is complete.
 ```
 
 ### Rollback Deployment
 
 ```
-I need to rollback my 'api-gateway' deployment in the 'services' namespace to the previous version.
+Roll back the 'api-gateway' deployment in the 'services' namespace to the previous version.
 ```
 
-### Discover API Resources
+### Execute in Pod
 
 ```
-What APIs are available in my Kubernetes cluster?
+Run 'ls -la /app/config' inside the 'app' container of pod 'web-app-xyz' in the 'default' namespace.
 ```
 
-### Describe Resources
+### Create Resources
 
 ```
-Can you describe the pod 'my-pod' in the 'default' namespace?
-```
-
-### Create New Resources
-
-```Create a new deployment with the following YAML:
+Create a new deployment with this YAML:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -201,127 +297,58 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:1.21
+        image: nginx:1.27
         ports:
         - containerPort: 80
 ```
 
-### Expose a Deployment
+## Architecture
 
 ```
-Expose my 'backend' deployment in the 'default' namespace as a service on port 80 targeting port 8080.
+k8s-multicluster-mcp/
+├── app.py                          # MCP server entry point & tool registration
+├── src/
+│   ├── utils/
+│   │   ├── k8s_client.py           # Multi-cluster client with context caching
+│   │   └── pluralize.py            # Kubernetes resource kind pluralization
+│   └── tools/
+│       ├── contexts.py             # Context listing
+│       ├── namespaces.py           # Namespace listing
+│       ├── namespace_management.py # Namespace create/delete
+│       ├── nodes.py                # Node listing
+│       ├── pods.py                 # Resource listing & pod logs
+│       ├── resources.py            # Single resource retrieval
+│       ├── events.py               # Event listing
+│       ├── describe.py             # kubectl describe equivalent
+│       ├── api_discovery.py        # API & CRD discovery
+│       ├── metrics.py              # Node/pod metrics (top)
+│       ├── diagnosis.py            # Application diagnostics
+│       ├── cluster_health.py       # Cluster health summary
+│       ├── rollouts.py             # Rollout management
+│       ├── scaling.py              # Scale & autoscale & resource updates
+│       ├── resource_management.py  # Create, apply, patch, label, annotate
+│       ├── delete_resource.py      # Resource deletion
+│       ├── workload_management.py  # Expose, run pod, set resources
+│       ├── node_management.py      # Cordon, drain, taint
+│       ├── pod_operations.py       # Exec into pods
+│       ├── secret_configmap.py     # Secret & ConfigMap management
+│       ├── rbac.py                 # Roles, bindings, service accounts
+│       ├── storage_network.py      # PVC, PV, StorageClass, NetworkPolicy
+│       └── job_management.py       # Jobs & CronJobs
+├── requirements.txt
+├── pyproject.toml
+├── Dockerfile
+└── smithery.yaml
 ```
 
-### Execute Command in a Pod
+## What's New in v2.0.0
 
-```
-Execute the command 'ls -la /app' in the 'app' container of pod 'web-app-1234' in the 'default' namespace.
-```
-
-
-### Node Maintenance
-
-```
-I need to perform maintenance on node 'worker-1'. Please cordon it, drain it, and then uncordon it after I complete my work.
-```
-
-### Apply Configuration
-
-```
-Apply this configuration to update my existing deployment:
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: existing-deployment
-  namespace: default
-spec:
-  replicas: 3
-  template:
-    spec:
-      containers:
-      - name: app
-        image: myapp:v2
-```
-
-### Patch a Resource
-
-```
-Patch the 'my-configmap' ConfigMap in the 'default' namespace to add a new key 'NEW_SETTING' with value 'enabled'.
-```
-
-### Update Labels
-
-```
-Add the label 'environment=production' to the 'api' deployment in the 'backend' namespace.
-```
-
-## Implemented Tools
-
-The server implements the following MCP tools:
-
-### Core Tools
-
-- `k8s_get_contexts`: List all available Kubernetes contexts
-- `k8s_get_namespaces`: List all namespaces in a specified context
-- `k8s_get_nodes`: List all nodes in a cluster
-- `k8s_get_resources`: List resources of a specified kind
-- `k8s_get_resource`: Get detailed information about a specific resource
-- `k8s_get_pod_logs`: Get logs from a specific pod
-- `k8s_describe`: Show detailed information about a specific resource or group of resources
-
-### API Discovery Tools
-
-- `k8s_apis`: List all available APIs in the Kubernetes cluster
-- `k8s_crds`: List all Custom Resource Definitions (CRDs) in the cluster
-
-### Metrics Tools
-
-- `k8s_top_nodes`: Display resource usage of nodes
-- `k8s_top_pods`: Display resource usage of pods
-
-### Rollout Management Tools
-
-- `k8s_rollout_status`: Get status of a rollout
-- `k8s_rollout_history`: Get revision history of a rollout
-- `k8s_rollout_undo`: Undo a rollout to a previous revision
-- `k8s_rollout_restart`: Restart a rollout
-- `k8s_rollout_pause`: Pause a rollout
-- `k8s_rollout_resume`: Resume a paused rollout
-
-### Scaling Tools
-
-- `k8s_scale_resource`: Scale a resource to a specified number of replicas
-- `k8s_autoscale_resource`: Configure a Horizontal Pod Autoscaler (HPA)
-- `k8s_update_resources`: Update resource requests and limits
-
-### Diagnostic Tools
-
-- `k8s_diagnose_application`: Diagnose issues with an application
-
-### Resource Creation and Management Tools
-
-- `k8s_create_resource`: Create a Kubernetes resource from YAML/JSON content
-- `k8s_apply_resource`: Apply a configuration to a resource (create or update)
-- `k8s_patch_resource`: Update fields of a resource
-- `k8s_label_resource`: Update the labels on a resource
-- `k8s_annotate_resource`: Update the annotations on a resource
-
-### Workload Management Tools
-
-- `k8s_expose_resource`: Expose a resource as a new Kubernetes service
-- `k8s_set_resources_for_container`: Set resource limits and requests for containers
-
-### Node Management Tools
-
-- `k8s_cordon_node`: Mark a node as unschedulable
-- `k8s_uncordon_node`: Mark a node as schedulable
-- `k8s_drain_node`: Drain a node in preparation for maintenance
-- `k8s_taint_node`: Update the taints on a node
-- `k8s_untaint_node`: Remove taints from a node
-
-### Pod Operations Tools
-
-- `k8s_pod_exec`: Execute a command in a container
+- **20+ new tools**: Resource deletion, namespace management, secrets & configmaps, RBAC inspection, storage & network visibility, job management, cluster health summary, pod creation
+- **Bug fixes**: Fixed resource pluralization (e.g., `Ingress` -> `ingresses` not `ingresss`), fixed pod exec command splitting to handle quoted arguments, fixed timeout parameter handling
+- **Performance**: Context discovery now uses a 30-second TTL cache with direct context-to-file mapping, eliminating redundant file scanning
+- **Improved tool descriptions**: All 60+ tools have detailed descriptions for better AI assistant integration
+- **Dependency cleanup**: Removed unused `fastapi` and `uvicorn` dependencies
+- **Security**: Namespace deletion protects system namespaces; secret values hidden by default
 
 ## Contributing
 
