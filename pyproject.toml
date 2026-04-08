@@ -1,18 +1,27 @@
-[tool.uv]
+[project]
 name = "k8s-multicluster-mcp"
 version = "2.0.0"
 description = "An MCP (Model Context Protocol) server for managing multiple Kubernetes clusters. Provides 60+ tools for cluster operations, monitoring, RBAC, storage, networking, and more."
-authors = ["razvanmacovei"]
+authors = [{name = "razvanmacovei"}]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp",
+    "kubernetes>=28.1.0",
+    "httpx",
+    "pydantic",
+    "pyyaml",
+    "jsonpatch",
+]
 
-[tool.uv.dependencies]
-python = "^3.11"
-fastmcp = "*"
-kubernetes = ">=28.1.0"
-httpx = "*"
-pydantic = "*"
-pyyaml = "*"
-jsonpatch = "*"
+[project.scripts]
+k8s-multicluster-mcp = "app:main"
 
 [build-system]
-requires = ["uv-core>=1.0.0"]
-build-backend = "uv.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+include = ["app.py"]
