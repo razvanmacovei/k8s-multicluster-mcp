@@ -639,7 +639,8 @@ async def k8s_get_cronjobs(context: str, namespace: Optional[str] = None,
 # ENTRY POINT
 # ========================================================================
 
-if __name__ == "__main__":
+def main():
+    """Entry point for the MCP server."""
     # Set kubeconfig directory from environment variable if provided
     kubeconfig_dir = os.environ.get("KUBECONFIG_DIR")
     if kubeconfig_dir:
@@ -652,3 +653,7 @@ if __name__ == "__main__":
 
     print("Starting Kubernetes MCP server with stdio transport...")
     mcp.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()
